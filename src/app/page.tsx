@@ -104,7 +104,7 @@ export default function Home() {
       )}
 
       {/* Video de fondo */}
-      <video className="background-video" autoplay loop muted playsInline>
+      <video className="background-video" autoPlay loop muted playsInline>
         <source src="https://images.guns.lol/IQ8Mb.mp4" type="video/mp4" />
       </video>
       <div className="background-overlay"></div>
