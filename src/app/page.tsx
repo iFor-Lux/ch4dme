@@ -1,0 +1,328 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import { Play, Pause, SkipBack, SkipForward, Eye } from 'lucide-react'
+
+export default function Home() {
+  const [showOverlay, setShowOverlay] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [viewCount, setViewCount] = useState(0)
+  const [currentSongIndex, setCurrentSongIndex] = useState(0)
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  const songs = [
+    {
+      title: "Luxury Music",
+      cover: "https://images.guns.lol/jNosq.webp",
+      url: "https://example.com/song1.mp3"
+    }
+  ]
+
+  useEffect(() => {
+    // Simular carga del contador de visitas
+    const timer = setTimeout(() => {
+      setViewCount(507)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const updateTime = () => setCurrentTime(audio.currentTime)
+    const updateDuration = () => setDuration(audio.duration)
+
+    audio.addEventListener('timeupdate', updateTime)
+    audio.addEventListener('loadedmetadata', updateDuration)
+
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime)
+      audio.removeEventListener('loadedmetadata', updateDuration)
+    }
+  }, [])
+
+  const handleOverlayClick = () => {
+    setShowOverlay(false)
+    // Agregar clase animate a todos los elementos después de ocultar overlay
+    setTimeout(() => {
+      const elements = document.querySelectorAll('.profile-card, .logo-container, .profile-title, .profile-description, .circle-buttons, .music-player, .action-buttons, .view-counter')
+      elements.forEach(el => el.classList.add('animate'))
+    }, 100)
+  }
+
+  const togglePlay = () => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    if (isPlaying) {
+      audio.pause()
+    } else {
+      audio.play()
+    }
+    setIsPlaying(!isPlaying)
+  }
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const rect = e.currentTarget.getBoundingClientRect()
+    const percent = (e.clientX - rect.left) / rect.width
+    audio.currentTime = percent * duration
+  }
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60)
+    const seconds = Math.floor(time % 60)
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  }
+
+  const nextSong = () => {
+    setCurrentSongIndex((prev) => (prev + 1) % songs.length)
+  }
+
+  const prevSong = () => {
+    setCurrentSongIndex((prev) => (prev - 1 + songs.length) % songs.length)
+  }
+
+  return (
+    <>
+      {/* Overlay inicial */}
+      {showOverlay && (
+        <div className="initial-overlay" onClick={handleOverlayClick}>
+          <div className="overlay-text overlay-title text-focus-in">
+            &#64;&#76;&#117;&#120;&#46;&#95;&#101;&#122;
+          </div>
+          <div className="overlay-text overlay-subtitlez animate__animated animate__fadeInUp">
+            &#67;&#108;&#105;&#99;&#107;&#32;&#112;&#97;&#114;&#97;&#32;&#99;&#111;&#110;&#116;&#105;&#110;&#117;&#97;&#114;
+          </div>
+        </div>
+      )}
+
+      {/* Video de fondo */}
+      <video className="background-video" autoplay loop muted playsInline>
+        <source src="https://images.guns.lol/IQ8Mb.mp4" type="video/mp4" />
+      </video>
+      <div className="background-overlay"></div>
+
+      {/* Efecto TV */}
+      <div className="OLD_TV"></div>
+
+      {/* Card de perfil */}
+      <div className="profile-card" id="interactive-card">
+        <img 
+          src="https://images.guns.lol/PKBLJ.webp" 
+          alt="Banner" 
+          className="banner-image"
+        />
+
+        <div className="profile-header">
+          <div className="logo-container">
+            <img 
+              src="https://images.guns.lol/dJs1n.webp" 
+              alt="Luxury Logo" 
+              className="logo-image"
+            />
+          </div>
+          <h1 className="profile-title" style={{ display: 'inline-flex', alignItems: 'center', filter: 'drop-shadow(0 0 2.5px #ffffff)' }}>
+            &#76;&#117;&#120;&#117;&#114;&#121;
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="gn2BZU_d55067dbb097c330111f" 
+              width="20px" 
+              height="20px" 
+              viewBox="1 1.5 22 21" 
+              filter="drop-shadow(0 0 2.5px #008ada)" 
+              style={{ marginLeft: '6px' }}
+              aria-hidden="true"
+            >
+              <path fill="#008ada" d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9 3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45l-3.4 1.45Zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12l3.55 3.55Z"></path>
+            </svg>
+          </h1>
+          <p className="profile-description">
+            <span>
+              &#83;&#111;&#109;&#111;&#115; 
+              <a 
+                href="https://discord.gg/YD9MPNGMsz" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ fontWeight: 'bold', color: '#0da2ff', textDecoration: 'none', filter: 'drop-shadow(0 0 2.5px #0da2ff)' }}
+                aria-label="Discord"
+              >
+                &#64;&#76;&#117;&#120;&#117;&#114;&#121;&#114;&#101;&#103;&#101;&#100;&#105;&#116;
+              </a>
+              &#117;&#110;&#97;&#32;&#101;&#109;&#112;&#114;&#101;&#115;&#97;&#32;&#99;&#111;&#110;&#32;&#109;&aacute;&#115;&#32;&#100;&#101;&#32;&#53;&#32;&#97;&ntilde;&#111;&#115;&#32;&#100;&#101;&#32;&#101;&#120;&#112;&#101;&#114;&#105;&#101;&#110;&#99;&#105;&#97;&#32;&#101;&#110;&#32;&#101;&#108;&#32;&#109;&#101;&#114;&#99;&#97;&#100;&#111;&#32;&#115;&#105;&#101;&#109;&#112;&#114;&#101;&#32;&#101;&#110;&#116;&#114;&#101;&#103;&#97;&#110;&#100;&#111;&#32;&#101;&#108;&#32;&#109;&#101;&#106;&#111;&#114;&#32;&#112;&#114;&#111;&#100;&#117;&#99;&#116;&#111;&#32;&#97;&#108;&#32;&#109;&#101;&#110;&#111;&#114;&#32;&#112;&#114;&#101;&#99;&#105;&#111;&#32;&#112;&#111;&#115;&#105;&#98;&#108;&#101;&#46;
+            </span>
+          </p>
+        </div>
+
+        {/* Botones de redes sociales */}
+        <div className="circle-buttons">
+          {/* YouTube */}
+          <div className="circle-button">
+            <a 
+              href="https://youtube.com/@Luxuryregedit" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="YouTube" 
+              style={{ filter: 'drop-shadow(0 0 2.5px #ffffff)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" aria-hidden="true">
+                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+              </svg>
+            </a>
+          </div>
+          
+          {/* Telegram */}
+          <div className="circle-button">
+            <a 
+              href="https://t.me/luxuryregedit" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Telegram" 
+              style={{ filter: 'drop-shadow(0 0 2.5px #ffffff)' }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256" aria-hidden="true">
+                <g fill="#ffffff" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none" style={{ mixBlendMode: 'normal' }}>
+                  <g transform="scale(10.66667,10.66667)">
+                    <path d="M20.30273,2.98438c-0.28897,0.01257 -0.55415,0.09568 -0.78711,0.1875c-0.21522,0.08476 -0.98809,0.4096 -2.21875,0.92578c-1.23066,0.51618 -2.8614,1.20058 -4.59961,1.93164c-3.47642,1.46212 -7.38303,3.10683 -9.38477,3.94922c-0.06874,0.02864 -0.34791,0.11411 -0.65625,0.34961c-0.30905,0.23605 -0.65234,0.74834 -0.65234,1.30859c0,0.45195 0.22561,0.91225 0.49805,1.17578c0.27243,0.26353 0.54854,0.38674 0.7793,0.47852c0.67509,0.26884 2.76124,1.10195 3.66797,1.46484c0.31765,0.95194 1.06371,3.19421 1.23828,3.74609h-0.00195c0.14201,0.44921 0.28043,0.74196 0.47266,0.98633c0.09611,0.12218 0.21084,0.2329 0.35156,0.32031c0.05399,0.03354 0.11378,0.05955 0.17383,0.08398c0.00837,0.00355 0.01699,0.00443 0.02539,0.00781l-0.02344,-0.00586c0.01741,0.007 0.03304,0.01733 0.05078,0.02344c0.02891,0.00996 0.04896,0.00963 0.08789,0.01758c0.137,0.04215 0.27376,0.07031 0.40039,0.07031c0.54361,0 0.87695,-0.29492 0.87695,-0.29492l0.02149,-0.01563l2.34766,-1.98633l2.875,2.6582c0.05141,0.07265 0.46247,0.63086 1.41602,0.63086c0.56813,0 1.01926,-0.27926 1.30664,-0.57422c0.28738,-0.29496 0.4664,-0.59677 0.54688,-1.00586v-0.00391v-0.00195c0.05589,-0.29038 2.81641,-14.14648 2.81641,-14.14648l-0.00586,0.02344c0.0857,-0.38234 0.11095,-0.7521 0.00977,-1.12891c-0.10119,-0.37681 -0.37428,-0.74453 -0.70312,-0.9375c-0.32885,-0.19297 -0.64072,-0.25085 -0.92969,-0.23828zM19.9082,5.17383c-0.10845,0.5444 -2.56504,12.88614 -2.72461,13.70508l-2.85547,-2.63867c-0.73603,-0.68049 -1.88374,-0.70442 -2.64844,-0.05859l-1.45703,1.23242l0.77734,-3.03906c0,0 5.36255,-5.42814 5.68555,-5.74414c0.26,-0.253 0.31445,-0.34169 0.31445,-0.42969c0,-0.117 -0.06022,-0.20117 -0.19922,-0.20117c-0.125,0 -0.29477,0.11978 -0.38477,0.17578c-1.1485,0.71603 -6.06588,3.51844 -8.44727,4.87305c-0.08945,-0.05356 -0.17744,-0.10916 -0.27539,-0.14844c-0.78138,-0.31273 -2.28323,-0.91484 -3.16211,-1.26562c2.07426,-0.873 5.62991,-2.36896 8.94141,-3.76172c1.73791,-0.73094 3.36817,-1.41595 4.59766,-1.93164c1.03785,-0.43531 1.57923,-0.6607 1.83789,-0.76758zM17.15234,19.02344h0.00195c-0.00006,0.00032 -0.00185,0.00751 -0.00195,0.00781c0.00168,-0.00854 -0.00116,-0.00166 0,-0.00781z"></path>
+                  </g>
+                </g>
+              </svg>
+            </a>
+          </div>
+          
+          {/* Instagram */}
+          <div className="circle-button">
+            <a 
+              href="https://instagram.com/lux._ez" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Instagram" 
+              style={{ filter: 'drop-shadow(0 0 2.5px #ffffff)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+          </div>
+          
+          {/* Discord */}
+          <div className="circle-button">
+            <a 
+              href="https://discord.gg/YD9MPNGMsz" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Discord" 
+              style={{ filter: 'drop-shadow(0 0 2.5px #ffffff)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                <path d="M18.942 5.556a16.299 16.299 0 0 0-4.126-1.297c-.178.321-.385.754-.529 1.097a15.175 15.175 0 0 0-4.573 0 11.583 11.583 0 0 0-.535-1.097 16.274 16.274 0 0 0-4.129 1.3c-2.611 3.946-3.319 7.794-2.965 11.587a16.494 16.494 0 0 0 5.061 2.593 12.65 12.65 0 0 0 1.084-1.785 10.689 10.689 0 0 1-1.707-.831c.143-.106.283-.217.418-.331 3.291 1.539 6.866 1.539 10.118 0 .137.114.277.225.418.331-.541.326-1.114.606-1.71.832a12.52 12.52 0 0 0 1.084 1.785 16.46 16.46 0 0 0 5.064-2.595c.415-4.396-.709-8.209-2.973-11.589zM8.678 14.813c-.991 0-1.8-.921-1.8-2.045s.789-2.047 1.8-2.047 1.815.922 1.8 2.047c.001 1.124-.799 2.045-1.8 2.045zm6.644 0c-.991 0-1.8-.921-1.8-2.045s.789-2.047 1.8-2.047 1.815.922 1.8 2.047c0 1.124-.789 2.045-1.8 2.045z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        {/* Reproductor de música */}
+        <div className="music-player" id="music-player">
+          <div className="song-info">
+            <div className="album-cover">
+              <img 
+                src={songs[currentSongIndex].cover} 
+                alt="Album Cover" 
+                width="60" 
+                height="60"
+              />
+            </div>
+            <div className="song-title">{songs[currentSongIndex].title}</div>
+            <div className="player-controls">
+              <button 
+                onClick={prevSong}
+                className="control-button" 
+                aria-label="Canción anterior"
+              >
+                <SkipBack size={16} />
+              </button>
+              
+              <button 
+                onClick={togglePlay}
+                className="control-button play-button" 
+                aria-label="Reproducir/Pausar"
+              >
+                {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+              </button>
+              
+              <button 
+                onClick={nextSong}
+                className="control-button" 
+                aria-label="Canción siguiente"
+              >
+                <SkipForward size={16} />
+              </button>
+            </div>
+          </div>
+          
+          <div className="progress-container" onClick={handleProgressClick}>
+            <div 
+              className="progress-bar" 
+              style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+            ></div>
+          </div>
+          
+          <div className="time-display">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+          
+          <audio 
+            ref={audioRef}
+            src={songs[currentSongIndex].url}
+            preload="metadata"
+          />
+        </div>
+
+        {/* Botones de acción */}
+        <div className="action-buttons">
+          <button 
+            className="action-button" 
+            onClick={() => window.open('https://t.me/m/4RfLGjlXNDdh', '_blank')}
+            aria-label="Telegram"
+          >
+            &#67;&#79;&#77;&#80;&#82;&#65;&#82;&#32;&#86;&#73;&#80;
+          </button>
+          <button 
+            className="action-button" 
+            onClick={() => window.open('https://cuty.io/LuxuryGRATIS', '_blank')}
+            aria-label="Cuty"
+          >
+            &#68;&#69;&#83;&#67;&#65;&#82;&#71;&#65;&#82;&#32;&#71;&#82;&#65;&#84;&#73;&#83;
+          </button>
+          <button 
+            className="action-button" 
+            onClick={() => window.open('https://luxury-organization.gitbook.io/luxury-regedit', '_blank')}
+            aria-label="Gitbook"
+          >
+            &#84;&#85;&#84;&#79;&#82;&#73;&#65;&#76;&#69;&#83;
+          </button>
+        </div>
+        
+        {/* Contador de visitas */}
+        <div className="view-counter">
+          <Eye 
+            size={16} 
+            style={{ filter: 'drop-shadow(0 0 2.5px #ffffff)' }}
+            aria-label="Contador de visitas"
+          />
+          <span className="view-number">{viewCount}</span>
+        </div>
+      </div>
+    </>
+  )
+}
