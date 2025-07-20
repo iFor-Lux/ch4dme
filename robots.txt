@@ -1,0 +1,64 @@
+# robots.txt - Directrices para motores de búsqueda
+
+# Usuario: todos los robots
+User-agent: *
+
+# Permite el acceso a todo el sitio por defecto
+Allow: /
+
+# Excepciones específicas
+Disallow: /admin/      # Protege el directorio de administración
+Disallow: /wp-admin/   # Protege el panel de administración de WordPress (si existe)
+Disallow: /wp-content/ # Protege los archivos de contenido de WordPress
+Disallow: /wp-includes/ # Protege los archivos del núcleo de WordPress
+
+# Evita el rastreo de archivos temporales y de caché
+Disallow: /*.tmp$
+Disallow: /*.bak$
+Disallow: /*~$
+
+# Evita el rastreo de archivos de log
+Disallow: /*.log$
+
+# Evita el rastreo de archivos de configuración
+Disallow: /*.ini$
+Disallow: /*.json$
+
+# Evita el rastreo de archivos de depuración
+Disallow: /*.debug$
+
+# Evita el rastreo de directorios de prueba
+Disallow: /test/
+
+# Sitemap
+Sitemap: https://ch4d.me/sitemap.xml
+
+# Directivas específicas para Google
+User-agent: Googlebot
+Allow: /wp-content/uploads/  # Permite el acceso a imágenes y archivos multimedia
+Disallow: /wp-content/plugins/  # Evita el rastreo de plugins
+
+# Directivas para Googlebot-Image
+User-agent: Googlebot-Image
+Allow: /wp-content/uploads/  # Permite el acceso a imágenes
+Disallow: /wp-content/plugins/  # Evita el rastreo de imágenes en plugins
+
+# Directivas para Bing
+User-agent: Bingbot
+Allow: /wp-content/uploads/  # Permite el acceso a imágenes y archivos multimedia
+Disallow: /wp-content/plugins/  # Evita el rastreo de plugins
+
+# Directivas para Yahoo
+User-agent: Slurp
+Allow: /wp-content/uploads/  # Permite el acceso a imágenes y archivos multimedia
+Disallow: /wp-content/plugins/  # Evita el rastreo de plugins
+
+# Directivas para Yandex
+User-agent: Yandex
+Allow: /wp-content/uploads/  # Permite el acceso a imágenes y archivos multimedia
+Disallow: /wp-content/plugins/  # Evita el rastreo de plugins
+
+# Directivas para Baidu
+User-agent: Baiduspider
+Allow: /wp-content/uploads/  # Permite el acceso a imágenes y archivos multimedia
+Disallow: /wp-content/plugins/  # Evita el rastreo de plugins
